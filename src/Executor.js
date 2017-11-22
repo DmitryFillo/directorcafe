@@ -6,8 +6,8 @@ import type Logger from './Logger';
 import StepException from './exceptions/StepException';
 import RetryException from './exceptions/RetryException';
 
-import replayGenerator from './utils/replayGenerator';
-import truncateGenerator from './utils/truncateGenerator';
+import moveGen from './utils/moveGen';
+import truncateGen from './utils/truncateGen';
 import getCurrentUrl from './utils/testcafe/getCurrentUrl';
 
 type ExecutorStep = {
@@ -96,9 +96,7 @@ export default class Executor {
       await this._logger.log(t, `${name}: before`);
 
       try {
-        result = await step(t, {
-          returnFromPrevStep: result,
-        });
+        result = await step(t, result);
       } catch (e) {
         if (!(e instanceof RetryException)) {
           throw e;
@@ -136,13 +134,13 @@ export default class Executor {
         result[next] = null;
         return result;
       }, ({}: Steps));
-      g = truncateGenerator(
+      g = truncateGen(
         g,
         (genStep: StepDescriptor) => excludeStepsObj[genStep.name] === null,
       );
     }
 
-    return replayGenerator(g, (value: StepDescriptor) => value.name === stepName);
+    return moveGen(g, (value: StepDescriptor) => value.name === stepName);
   }
 
   async _processRetry(

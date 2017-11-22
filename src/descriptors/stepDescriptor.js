@@ -1,10 +1,10 @@
 // @flow
 
 export type StepTest = (...args: Array<any>)
-  => Promise<?TestCafe$TestController>;
+  => Promise<any>;
 
 export type Step = (t: TestCafe$TestController, returnFromPrevStep: any)
-  => Promise<?TestCafe$TestController>;
+  => Promise<any>;
 
 export type StepDescriptor = {
   name: string,

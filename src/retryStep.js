@@ -25,7 +25,7 @@ export default (
 
   const wrap = async (
     t: TestCafe$TestController,
-    { returnFromPrevStep }: { returnFromPrevStep: any },
+    returnFromPrevStep: any,
   ): Promise<any> => {
     let result: any;
     try {
