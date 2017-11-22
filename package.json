@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Extensions for TestCafe allows to log, retry steps, rethrow internal exceptions, etc",
   "scripts": {
+    "example": "testcafe \"chrome\" examples/*.spec.js -d",
     "flow": "flow",
     "lint": "eslint ./src",
     "setup": "yarn install && flow-typed install testcafe@0.18.4",
