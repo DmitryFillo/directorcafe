@@ -1,7 +1,8 @@
 {
   "plugins": [
     "testcafe",
-    "flowtype"
+    "flowtype",
+    "jest"
   ],
   "parser": "babel-eslint",
   "extends": [

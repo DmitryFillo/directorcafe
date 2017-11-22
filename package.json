@@ -4,6 +4,8 @@
   "description": "Extensions for TestCafe allows to log, retry steps, rethrow internal exceptions, etc",
   "scripts": {
     "example": "testcafe \"chrome\" examples/*.spec.js -d",
+    "integration": "testcafe \"chrome:headless\" src/__integrationTests__/*.js",
+    "test": "jest",
     "flow": "flow",
     "lint": "eslint ./src",
     "setup": "yarn install && flow-typed install testcafe@0.18.4",
@@ -15,16 +17,23 @@
   "license": "MIT",
   "devDependencies": {
     "babel-eslint": "8.0.2",
+    "babel-plugin-transform-flow-strip-types": "6.22.0",
+    "babel-preset-es2015": "6.24.1",
+    "babel-preset-stage-0": "6.24.1",
+    "coveralls": "3.0.0",
     "eslint": "4.11.0",
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-plugin-flowtype": "2.39.1",
     "eslint-plugin-import": "2.8.0",
+    "eslint-plugin-jest": "21.3.2",
     "eslint-plugin-testcafe": "0.2.1",
     "flow-bin": "0.59.0",
-    "flow-typed": "2.2.3"
+    "flow-typed": "2.2.3",
+    "jest": "21.2.1"
   },
   "dependencies": {
     "log4js": "2.3.12",
+    "prettyjson": "1.2.1",
     "testcafe": "0.18.4"
   }
 }
