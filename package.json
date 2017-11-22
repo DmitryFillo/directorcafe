@@ -1,0 +1,9 @@
+{
+  "name": "directorcafe",
+  "version": "0.0.1",
+  "description": "Extensions for TestCafe allows to log, retry steps, rethrow internal exceptions, etc",
+  "main": "src/index.js",
+  "repository": "https://github.com/DmitryFillo/directorcafe",
+  "author": "DmitryFillo <fillo@fillo.me>",
+  "license": "MIT"
+}
