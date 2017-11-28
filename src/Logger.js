@@ -3,7 +3,7 @@
 import log4js from 'log4js';
 import prettyjson from 'prettyjson';
 
-import getCurrentUrl from './utils/testcafe/getCurrentUrl';
+import getCurrentUrl from './testcafe/getCurrentUrl';
 
 export default class DirectorLogger {
   _screenshotCount: number = 0;

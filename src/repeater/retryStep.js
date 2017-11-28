@@ -1,10 +1,10 @@
 // @flow
 
-import type { Step, StepDescriptor } from './descriptors/stepDescriptor';
-import type { RetryDescriptor } from './descriptors/retryDescriptor';
+import type { Step, StepDescriptor } from '../executor/stepDescriptor';
+import type { RetryDescriptor } from './retryDescriptor';
 
-import stepFactory from './descriptors/stepDescriptor';
-import RetryException from './exceptions/RetryException';
+import stepFactory from '../executor/stepDescriptor';
+import RetryException from '../exceptions/RetryException';
 
 type RetryMap = { [string]: RetryDescriptor };
 

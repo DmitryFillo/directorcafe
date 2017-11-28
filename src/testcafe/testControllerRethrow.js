@@ -1,6 +1,6 @@
 // @flow
 
-import StepException from '../../exceptions/StepException';
+import StepException from '../exceptions/StepException';
 
 export default async (
   t: TestCafe$TestController,

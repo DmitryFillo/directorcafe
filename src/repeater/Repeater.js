@@ -1,36 +1,31 @@
 // @flow
 
-import type { StepDescriptor } from './descriptors/stepDescriptor';
-import type Logger from './Logger';
+import type Executor from '../executor/Executor';
+import type { StepDescriptor } from '../executor/stepDescriptor';
+import type Logger from '../Logger';
 
-import StepException from './exceptions/StepException';
-import RetryException from './exceptions/RetryException';
+import StepException from '../exceptions/StepException';
+import RetryException from '../exceptions/RetryException';
 
-import moveGen from './utils/moveGen';
-import truncateGen from './utils/truncateGen';
-import getCurrentUrl from './utils/testcafe/getCurrentUrl';
+import repeatTest from './repeatTest';
 
-type ExecutorStep = {
-  name: string,
-  result: any,
-  url: string,
-};
-
-export default class Executor {
-  _steps: {
-    [?string]: ExecutorStep,
-  };
+export default class Repeater {
   _retryCount: {
     [string]: number,
   };
   _test: () => Generator<StepDescriptor, *, *>;
   _logger: Logger;
+  _executor: Executor;
 
-  constructor(gen: () => Generator<StepDescriptor, *, *>, logger: Logger) {
+  constructor(
+    gen: () => Generator<StepDescriptor, *, *>,
+    logger: Logger,
+    executor: Executor,
+  ) {
     this._test = gen;
-    this._steps = {};
     this._retryCount = {};
     this._logger = logger;
+    this._executor = executor;
   }
 
   async run(t: TestCafe$TestController): Promise<?TestCafe$TestController> {
@@ -39,7 +34,16 @@ export default class Executor {
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const retryException: ?RetryException = await this._tryRun(t, g, v);
+      let retryException: ?RetryException = null;
+
+      try {
+        await this._executor.run(t, g, v);
+      } catch (e) {
+        if (!(e instanceof RetryException)) {
+          throw e;
+        }
+        retryException = e;
+      }
 
       if (!retryException) {
         break;
@@ -53,10 +57,13 @@ export default class Executor {
       await this._logger.log(t, `Retry exception "${origException.constructor.name}" is caught, retry to some of [${possibleSteps.join(', ')}]`);
 
       const toStep = await this._processRetry(possibleSteps, origException, retries);
-      const returnToStep = this._steps[toStep];
+      const returnToStep = this._executor.getHistory()[toStep];
 
       if (!returnToStep) {
-        await this._logger.log(t, `Retry is not proceed for ${String(toStep)} because it is not found in the already executed steps: [${Object.keys(this._steps).join(', ')}]`);
+        await this._logger.log(
+          t,
+          `Retry is not proceed for ${String(toStep)} because it is not found in the already executed steps: [${Object.keys(this._executor.getHistory()).join(', ')}]`,
+        );
         // eslint-disable-next-line no-continue
         continue;
       }
@@ -68,79 +75,8 @@ export default class Executor {
 
       await t.navigateTo(returnToStepUrl);
 
-      [g, v] = this._replayTest(returnToStepName, excludeSteps);
+      [g, v] = repeatTest(this._test(), returnToStepName, excludeSteps);
     }
-  }
-
-  async _tryRun(
-    t: TestCafe$TestController,
-    g: Generator<*, *, *>,
-    v: any,
-  ): Promise<?RetryException> {
-    let val = v;
-    let result: any = null;
-    let retryException: ?RetryException = null;
-
-    while (!val.done) {
-      const { name, step }: StepDescriptor = val.value;
-
-      const url: string = await getCurrentUrl();
-
-      this._steps[name] = ({
-        step,
-        name,
-        result: null,
-        url,
-      }: ExecutorStep);
-
-      await this._logger.log(t, `${name}: before`);
-
-      try {
-        result = await step(t, result);
-      } catch (e) {
-        if (!(e instanceof RetryException)) {
-          throw e;
-        }
-        retryException = e;
-        break;
-      }
-
-      await this._logger.log(t, `${name}: after`);
-
-      this._steps[name].result = result;
-
-      val = g.next();
-    }
-
-    return retryException;
-  }
-
-  _replayTest(
-    stepName: string,
-    excludeSteps: Array<string>,
-  ): [Generator<StepDescriptor, *, *>, StepDescriptor] {
-    type Steps = {
-      [string]: null,
-    };
-
-    let g = this._test();
-
-    if (excludeSteps && excludeSteps.length > 0) {
-      const excludeStepsObj: Steps = excludeSteps.reduce((
-        aggregate: Steps,
-        next: string,
-      ): Steps => {
-        const result: Steps = aggregate;
-        result[next] = null;
-        return result;
-      }, ({}: Steps));
-      g = truncateGen(
-        g,
-        (genStep: StepDescriptor) => excludeStepsObj[genStep.name] === null,
-      );
-    }
-
-    return moveGen(g, (value: StepDescriptor) => value.name === stepName);
   }
 
   async _processRetry(
