@@ -5,15 +5,16 @@ import type Logger from '../Logger';
 
 import getCurrentUrl from '../testcafe/getCurrentUrl';
 
-type StepsQueue = {
-  [?string]: ExecutorStep,
-};
-
 export type ExecutorStep = {
   name: string,
   result: any,
   url: string,
 };
+
+type StepsQueue = {
+  [?string]: ExecutorStep,
+};
+
 
 export default class Executor {
   _steps: StepsQueue;
