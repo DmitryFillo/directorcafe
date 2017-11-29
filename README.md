@@ -10,6 +10,8 @@ TODO
 ----
 
 * verbose.log location customization
+* custom user logs
+* retry permanent or not (think about interface)
 * add unit/integration tests
 * add example
 
