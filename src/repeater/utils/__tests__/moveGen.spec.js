@@ -1,6 +1,6 @@
 import moveGen from '../moveGen';
 
-it('moveGen util works', () => {
+it('move generator util works', () => {
   // Arrange
   const testGen = function* testGen() {
     yield 0;

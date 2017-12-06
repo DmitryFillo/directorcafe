@@ -8,7 +8,7 @@ import truncateGen from './utils/truncateGen';
 export default (
   testGen: Generator<StepDescriptor, *, *>,
   stepName: string,
-  excludeSteps: Array<string>,
+  excludeSteps: ?Array<string>,
 ): [Generator<StepDescriptor, *, *>, StepDescriptor] => {
   type Steps = {
     [string]: null,
@@ -31,5 +31,5 @@ export default (
     );
   }
 
-  return moveGen(g, (value: StepDescriptor) => value.name === stepName);
+  return moveGen(g, (value: StepDescriptor): boolean => value.name === stepName);
 };

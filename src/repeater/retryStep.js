@@ -1,7 +1,7 @@
 // @flow
 
 import type { Step, StepDescriptor } from '../executor/stepDescriptor';
-import type { RetryDescriptor } from './retryDescriptor';
+import type { RetryDescriptor } from './descriptors/retryDescriptor';
 
 import stepFactory from '../executor/stepDescriptor';
 import RetryException from '../exceptions/RetryException';
@@ -28,6 +28,7 @@ export default (
     returnFromPrevStep: any,
   ): Promise<any> => {
     let result: any;
+
     try {
       result = await step(t, returnFromPrevStep);
     } catch (e) {
@@ -45,8 +46,13 @@ export default (
       }:
         RetryDescriptor = retryDescriptor;
 
-      throw new RetryException(type, tos, e, maxRetryCount, exclude);
+      const message = `Retry occurs for ${type.name}. Possible steps: [${tos.join(', ')}]. Exclude steps: [${exclude.map(s => s.exclude).join(', ')}].`;
+      const retryException = new RetryException(type, tos, maxRetryCount, exclude, message);
+      retryException.setCauseException(e);
+
+      throw retryException;
     }
+
     return result;
   };
 

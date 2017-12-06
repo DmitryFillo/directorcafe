@@ -2,8 +2,9 @@
 
 export { default as director } from './director';
 export { default as step } from './executor/stepDescriptor';
-export { default as retryDescriptor } from './repeater/retryDescriptor';
-export { default as retryStep } from './repeater/retryStep';
-export { default as StepException } from './exceptions/StepException';
-export { default as rethrows } from './testcafe/testControllerRethrow';
+export { default as retry } from './repeater/descriptors/retryDescriptor';
+export { default as exclude } from './repeater/descriptors/excludeDescriptor';
+export { default as retryFor } from './repeater/retryStep';
+export { default as BaseException } from './exceptions/BaseException';
+export { default as rethrow } from './testcafe/testControllerRethrow';
 export { default as getCurrentUrl } from './testcafe/getCurrentUrl';

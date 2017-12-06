@@ -1,28 +1,29 @@
 // @flow
 
-export default class RetryException extends Error {
+import type { ExcludeDescriptor } from '../repeater/descriptors/excludeDescriptor';
+
+import BaseException from './BaseException';
+
+export default class RetryException extends BaseException {
   type: (...args: Array<any>) => Error;
-  tos: Array<string>;
-  exclude: Array<string>;
-  origException: Error;
+  possibleSteps: Array<string>;
+  excludeSteps: ?Array<ExcludeDescriptor>;
   retryCount: number;
 
   constructor(
     type: (...args: Array<any>) => Error,
-    tos: Array<string>,
-    origException: Error,
+    possibleSteps: Array<string>,
     retryCount: number,
-    exclude: Array<string>,
+    excludeSteps: ?Array<ExcludeDescriptor> = null,
+    ...args: Array<any>
   ): void {
-    if (!tos) {
+    if (!possibleSteps) {
       throw new Error('You cannot initialize RetryException without "tos" parameter in the constructor!');
     }
-    const message: string = `RetryException occurred by ${origException.name}. Going to the [${tos.join(', ')}] steps. Excluding [${exclude.join(', ')}] steps.`;
-    super(message);
+    super(...args);
     this.type = type;
-    this.tos = tos;
+    this.possibleSteps = possibleSteps;
     this.retryCount = retryCount;
-    this.exclude = exclude;
-    this.origException = origException;
+    this.excludeSteps = excludeSteps;
   }
 }

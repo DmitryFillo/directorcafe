@@ -1,16 +1,17 @@
 // @flow
 
-import { rethrows, StepException } from '../../../';
+import { rethrow, BaseException } from '../../../';
 
-export class ReturnFromPrevStepShouldBeGreaterThanThree extends StepException {
+export class ReturnFromPrevStepShouldBeGreaterThanThree extends BaseException {
   // just for type
 }
 
-export default async (t: TestCafe$TestController, returnFromPrevStep: number): Promise<void> => {
+export default async (t: TestCafe$TestController, returnFromPrevStep: number): Promise<number> => {
   // Rethrow error for assertion using return value from previous step.
-  await rethrows(
+  await rethrow(
     t,
     async () => t.expect(returnFromPrevStep).gt(3, 'return from prev step should be greater than 3'),
     new ReturnFromPrevStepShouldBeGreaterThanThree(),
   );
+  return returnFromPrevStep;
 };

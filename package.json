@@ -4,7 +4,7 @@
   "description": "Extensions for TestCafe allows to log, retry steps, rethrow internal exceptions, etc",
   "scripts": {
     "example": "testcafe \"chrome\" examples/*.spec.js -d",
-    "integration": "testcafe \"chrome:headless\" src/__integrationTests__/**/*.js",
+    "integration": "testcafe \"chrome:headless\" src/__integrationTests__/**/*.spec.js",
     "test": "jest",
     "flow": "flow",
     "lint": "eslint ./src",

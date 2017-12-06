@@ -9,9 +9,9 @@ Extension for [TestCafe](https://github.com/DevExpress/testcafe) allows to log, 
 TODO
 ----
 
+* separate retries for steps?
 * verbose.log location customization
 * custom user logs
-* retry permanent or not (think about interface)
 * navigateTo, wait for result
 * add unit/integration tests
 * add example

@@ -1,6 +1,6 @@
 // @flow
 
-export default class StepException extends Error {
+export default class BaseException extends Error {
   throwCauseException: ?Error = null;
 
   setCauseException(e: ?Error) {

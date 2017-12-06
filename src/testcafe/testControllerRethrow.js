@@ -1,6 +1,6 @@
 // @flow
 
-import StepException from '../exceptions/StepException';
+import BaseException from '../exceptions/BaseException';
 
 export default async (
   t: TestCafe$TestController,
@@ -19,7 +19,7 @@ export default async (
         throw e;
       }
     }
-    if (exception instanceof StepException) {
+    if (exception instanceof BaseException) {
       exception.setCauseException(e);
     }
   }

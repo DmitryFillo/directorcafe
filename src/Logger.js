@@ -36,6 +36,7 @@ export default class DirectorLogger {
     this._logger.info('-- LOG ENTRY END --');
   }
 
+  // TODO: add possibility to enable or disable
   async _takeScreenshot(t: TestCafe$TestController): Promise<string> {
     this._screenshotCount += 1;
     const path = `directorCafe/${this._startDate}/${this._screenshotCount}.png`;

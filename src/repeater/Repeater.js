@@ -4,7 +4,7 @@ import type Executor from '../executor/Executor';
 import type { StepDescriptor } from '../executor/stepDescriptor';
 import type Logger from '../Logger';
 
-import StepException from '../exceptions/StepException';
+import BaseException from '../exceptions/BaseException';
 import RetryException from '../exceptions/RetryException';
 
 import repeatTest from './repeatTest';
@@ -13,6 +13,7 @@ export default class Repeater {
   _retryCount: {
     [string]: number,
   };
+  _excludeSteps: Set<string>;
   _test: () => Generator<StepDescriptor, *, *>;
   _logger: Logger;
   _executor: Executor;
@@ -24,6 +25,7 @@ export default class Repeater {
   ) {
     this._test = gen;
     this._retryCount = {};
+    this._excludeSteps = new Set();
     this._logger = logger;
     this._executor = executor;
   }
@@ -49,14 +51,16 @@ export default class Repeater {
         break;
       }
 
-      const possibleSteps = retryException.tos;
-      const { origException } = retryException;
-      const retries = retryException.retryCount;
-      const excludeSteps = retryException.exclude;
+      const {
+        possibleSteps,
+        throwCauseException,
+        retries,
+        excludeSteps,
+      } = retryException;
 
-      await this._logger.log(t, `Retry exception "${origException.constructor.name}" is caught, retry to some of [${possibleSteps.join(', ')}]`);
+      await this._logger.log(t, `Retry exception "${throwCauseException.constructor.name}" is caught, retry to some of [${possibleSteps.join(', ')}]`);
 
-      const toStep = await this._processRetry(possibleSteps, origException, retries);
+      const toStep = await this._processRetry(possibleSteps, throwCauseException, retries);
       const returnToStep = this._executor.getHistory()[toStep];
 
       if (!returnToStep) {
@@ -68,14 +72,25 @@ export default class Repeater {
         continue;
       }
 
-      await this._logger.log(t, `Retry proceed, go to "${String(toStep)}"`);
+      await this._logger.log(t, `Retry proceed, go to the "${String(toStep)}" step`);
 
-      const returnToStepName = returnToStep.name;
-      const returnToStepUrl = returnToStep.url;
+      const { name, url } = returnToStep;
 
-      await t.navigateTo(returnToStepUrl);
+      await t.navigateTo(url);
+      // TODO: add delay
+      // https://github.com/DevExpress/testcafe/issues/1978
 
-      [g, v] = repeatTest(this._test(), returnToStepName, excludeSteps);
+      excludeSteps.forEach(({ permanent, exclude }) => {
+        if (permanent) {
+          this._excludeSteps.add(exclude);
+        }
+      });
+
+      [g, v] = repeatTest(
+        this._test(),
+        name,
+        [...this._excludeSteps, ...excludeSteps.map(e => e.exclude)],
+      );
     }
   }
 
@@ -107,7 +122,7 @@ export default class Repeater {
       const msg = ` (after ${possibleMaxRetries} retries to [${tos.join(', ')}] steps)`;
 
       // Throw cause exception if it present.
-      if ((origException instanceof StepException) && origException.throwCauseException) {
+      if ((origException instanceof BaseException) && origException.throwCauseException) {
         const throwCauseExceptionToRethrow = origException.throwCauseException;
 
         // If it's TestCafe exception fix error message to be more verbose.
