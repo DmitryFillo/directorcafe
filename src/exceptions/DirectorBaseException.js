@@ -2,6 +2,7 @@
 
 export default function DirectorBaseException(message) {
   Error.call(this, message);
+
   this.name = 'DirectorBaseException';
   this.message = message;
 

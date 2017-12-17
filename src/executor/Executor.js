@@ -15,7 +15,6 @@ type StepsQueue = {
   [?string]: ExecutorStep,
 };
 
-
 export default class Executor {
   _steps: StepsQueue;
   _logger: Logger;
@@ -34,7 +33,8 @@ export default class Executor {
     let result: any = null;
 
     while (!val.done) {
-      const { name, step }: StepDescriptor = val.value;
+      const stepDescriptor = val.value;
+      const { name, step }: StepDescriptor = stepDescriptor;
 
       const url: string = await getCurrentUrl();
 
@@ -45,12 +45,7 @@ export default class Executor {
         url,
       }: ExecutorStep);
 
-      // TODO: extract method?
-      await this._logger.log(t, `${name}: before`);
-
-      result = await step(t, result);
-
-      await this._logger.log(t, `${name}: after`);
+      result = await this._executor(t, stepDescriptor, result);
 
       this._steps[name].result = result;
 
@@ -60,5 +55,19 @@ export default class Executor {
 
   getHistory(): StepsQueue {
     return this._steps;
+  }
+
+  async _execute(
+    t: TestCafe$TestController,
+    stepDescriptor: StepDescriptor,
+    prevResult: any,
+  ): Promise<any> {
+    const { name, step }: StepDescriptor = stepDescriptor;
+
+    await this._logger.log(t, `${name}: before`);
+    const result = await step(t, prevResult);
+    await this._logger.log(t, `${name}: after`);
+
+    return result;
   }
 }

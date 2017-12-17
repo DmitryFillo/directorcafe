@@ -53,14 +53,14 @@ export default class Repeater {
 
       const {
         possibleSteps,
-        throwCauseException,
+        innerException,
         retries,
         excludeSteps,
       } = retryException;
 
-      await this._logger.log(t, `Retry exception "${throwCauseException.constructor.name}" is caught, retry to some of [${possibleSteps.join(', ')}]`);
+      await this._logger.log(t, `Retry exception "${innerException.constructor.name}" is caught, retry to some of [${possibleSteps.join(', ')}]`);
 
-      const toStep = await this._processRetry(possibleSteps, throwCauseException, retries);
+      const toStep = await this._processRetry(possibleSteps, innerException, retries);
       const returnToStep = this._executor.getHistory()[toStep];
 
       if (!returnToStep) {

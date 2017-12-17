@@ -1,8 +1,8 @@
 // @flow
 
-import { rethrow, BaseException } from '../../../';
+import { rethrow, DirectorBaseException } from '../../../';
 
-export class ReturnFromPrevStepShouldBeGreaterThanThree extends BaseException {
+export class ReturnFromPrevStepShouldBeGreaterThanThree extends DirectorBaseException {
   // just for type
 }
 
