@@ -2,9 +2,9 @@
 
 import type { ExcludeDescriptor } from '../repeater/descriptors/excludeDescriptor';
 
-import BaseException from './BaseException';
+import DirectorBaseException from './DirectorBaseException';
 
-export default class RetryException extends BaseException {
+export default class RetryException extends DirectorBaseException {
   type: (...args: Array<any>) => Error;
   possibleSteps: Array<string>;
   excludeSteps: ?Array<ExcludeDescriptor>;
@@ -15,12 +15,13 @@ export default class RetryException extends BaseException {
     possibleSteps: Array<string>,
     retryCount: number,
     excludeSteps: ?Array<ExcludeDescriptor> = null,
-    ...args: Array<any>
+    message: string,
   ): void {
     if (!possibleSteps) {
       throw new Error('You cannot initialize RetryException without "tos" parameter in the constructor!');
     }
-    super(...args);
+    super(message);
+    this.name = 'RetryException';
     this.type = type;
     this.possibleSteps = possibleSteps;
     this.retryCount = retryCount;

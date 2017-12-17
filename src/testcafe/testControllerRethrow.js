@@ -1,12 +1,12 @@
 // @flow
 
-import BaseException from '../exceptions/BaseException';
+import DirectorBaseException from '../exceptions/DirectorBaseException';
 
 export default async (
   t: TestCafe$TestController,
   assert: () => Promise<any>,
   exception: Error,
-  type: ?Error = null,
+  type: ?(...args: Array<any>) => Error = null,
 ): Promise<any> => {
   // $FlowFixMe undocumented and no typedef
   const ec = t.executionChain.then();
@@ -14,18 +14,19 @@ export default async (
   try {
     return await assert();
   } catch (e) {
-    if (type) {
-      if (!(e instanceof type)) {
-        throw e;
-      }
+    if (type && !(e instanceof type)) {
+      throw e;
     }
-    if (exception instanceof BaseException) {
-      exception.setCauseException(e);
+
+    if (exception instanceof DirectorBaseException) {
+      exception.setInnerException(e);
     }
   }
-  // Hackynote:
-  // TestCafe chains promises internally, so we need to remove
-  // try-catch-promise from the chain to get rid of new error raising
+  /*
+    NOTE:
+    TestCafe chains promises internally, so we need to remove
+    try-catch-promise from the chain to get rid of future error raising
+  */
   tt.executionChain = ec;
   throw exception;
 };

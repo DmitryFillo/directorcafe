@@ -1,7 +1,7 @@
 {
   "name": "directorcafe",
   "version": "0.0.1",
-  "description": "Extensions for TestCafe allows to log, retry steps, rethrow internal exceptions, etc",
+  "description": "Extension for TestCafe allows to log, retry steps, rethrow internal exceptions, etc",
   "scripts": {
     "example": "testcafe \"chrome\" examples/*.spec.js -d",
     "integration": "testcafe \"chrome:headless\" src/__integrationTests__/**/*.spec.js",

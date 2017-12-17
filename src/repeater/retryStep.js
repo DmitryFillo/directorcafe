@@ -48,7 +48,7 @@ export default (
 
       const message = `Retry occurs for ${type.name}. Possible steps: [${tos.join(', ')}]. Exclude steps: [${exclude.map(s => s.exclude).join(', ')}].`;
       const retryException = new RetryException(type, tos, maxRetryCount, exclude, message);
-      retryException.setCauseException(e);
+      retryException.setInnerException(e);
 
       throw retryException;
     }

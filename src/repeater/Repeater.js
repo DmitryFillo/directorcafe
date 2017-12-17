@@ -4,7 +4,7 @@ import type Executor from '../executor/Executor';
 import type { StepDescriptor } from '../executor/stepDescriptor';
 import type Logger from '../Logger';
 
-import BaseException from '../exceptions/BaseException';
+import DirectorBaseException from '../exceptions/DirectorBaseException';
 import RetryException from '../exceptions/RetryException';
 
 import repeatTest from './repeatTest';
@@ -122,7 +122,7 @@ export default class Repeater {
       const msg = ` (after ${possibleMaxRetries} retries to [${tos.join(', ')}] steps)`;
 
       // Throw cause exception if it present.
-      if ((origException instanceof BaseException) && origException.throwCauseException) {
+      if ((origException instanceof DirectorBaseException) && origException.throwCauseException) {
         const throwCauseExceptionToRethrow = origException.throwCauseException;
 
         // If it's TestCafe exception fix error message to be more verbose.
