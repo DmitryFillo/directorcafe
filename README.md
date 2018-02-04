@@ -11,10 +11,14 @@ TODO
 
 * retry logic rethink
 * verbose.log path customization
+* enable / disable screenshots
 * custom user logs ?
 * navigateTo, wait for result
-* add unit/integration tests
-* add example
+* add unit tests for repeater / logger
+* refactor integration tests repeater
+* flow fixes
+* docs
+* add example (with example website?)
 
 Motivation
 ----------

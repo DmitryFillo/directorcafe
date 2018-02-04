@@ -13,7 +13,7 @@ export type StepDescriptor = {
 
 export default (name: string, step: StepTest, ...argsToInject: Array<any>): StepDescriptor => {
   if (name === undefined || step === undefined) {
-    throw new Error('You cannot define step without name and/or async step function');
+    throw new Error('You cannot define step without name and/or step function');
   }
   return {
     name,

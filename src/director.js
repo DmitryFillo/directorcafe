@@ -9,6 +9,7 @@ import type { StepDescriptor } from './executor/stepDescriptor';
 type ExecutorWrapper = (t: TestCafe$TestController) => Promise<?TestCafe$TestController>;
 
 export default (gen: () => Generator<StepDescriptor, *, *>): ExecutorWrapper => {
+  // TODO: add options to enable or disable screenshots
   const logger = new Logger();
   const executor = new Executor(logger);
   const repeater = new Repeater(gen, logger, executor);

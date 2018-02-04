@@ -42,13 +42,11 @@ it('Executor test', async () => {
 
   const historyThatShouldBe = {
     step1: {
-      step: step1,
       name: 'step1',
       result: undefined,
       url: 'url1',
     },
     step2: {
-      step: step2,
       name: 'step2',
       result: 'test',
       url: 'url2',
@@ -60,12 +58,14 @@ it('Executor test', async () => {
   // Act
   await executor.run(testContollerFn, genInitialized, genInitialized.next());
   const history = executor.getHistory();
+  await history.step1.step(testContollerFn);
 
   // Assert
-  // t fn calls via step fns
-  expect(testContollerFn.mock.calls.length).toBe(2);
+  // t fn calls via step fns, last call is history call
+  expect(testContollerFn.mock.calls.length).toBe(3);
   expect(testContollerFn.mock.calls[0][0]).toBe(1);
   expect(testContollerFn.mock.calls[1][0]).toBe(2);
+  expect(testContollerFn.mock.calls[2][0]).toBe(1);
 
   // get current url mock calls
   expect(getCurrentUrl.mock.calls.length).toBe(2);
@@ -82,5 +82,5 @@ it('Executor test', async () => {
   expect(logFn.mock.calls[3][1]).toBe('step2: after');
 
   // history check
-  expect(history).toEqual(historyThatShouldBe);
+  expect(history).toMatchObject(historyThatShouldBe);
 });
