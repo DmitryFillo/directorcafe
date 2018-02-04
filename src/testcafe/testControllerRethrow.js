@@ -11,11 +11,12 @@ export default async (
   // $FlowFixMe undocumented and no typedef
   const ec = t.executionChain.then();
   const tt = t;
+  let unexpected = null;
   try {
     return await assert();
   } catch (e) {
     if (type && !(e instanceof type)) {
-      throw e;
+      unexpected = e;
     }
 
     if (exception instanceof DirectorBaseException) {
@@ -28,5 +29,5 @@ export default async (
     try-catch-promise from the chain to get rid of future error raising
   */
   tt.executionChain = ec;
-  throw exception;
+  throw unexpected || exception;
 };

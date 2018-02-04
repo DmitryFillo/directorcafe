@@ -45,7 +45,7 @@ export default class Executor {
         url,
       }: ExecutorStep);
 
-      result = await this._executor(t, stepDescriptor, result);
+      result = await this._execute(t, stepDescriptor, result);
 
       this._steps[name].result = result;
 
