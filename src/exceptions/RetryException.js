@@ -12,14 +12,11 @@ export default class RetryException extends DirectorBaseException {
 
   constructor(
     type: (...args: Array<any>) => Error,
+    message: string,
     possibleSteps: Array<string>,
     retryCount: number,
     excludeSteps: ?Array<ExcludeDescriptor> = null,
-    message: string,
   ): void {
-    if (!possibleSteps) {
-      throw new Error('You cannot initialize RetryException without "tos" parameter in the constructor!');
-    }
     super(message);
     this.name = 'RetryException';
     this.type = type;

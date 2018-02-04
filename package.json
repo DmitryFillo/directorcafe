@@ -29,11 +29,11 @@
     "eslint-plugin-testcafe": "0.2.1",
     "flow-bin": "0.47.0",
     "flow-typed": "2.2.3",
-    "jest": "21.2.1"
+    "jest": "22.1.4"
   },
   "dependencies": {
     "log4js": "2.3.12",
     "prettyjson": "1.2.1",
-    "testcafe": "0.18.4"
+    "testcafe": "0.18.6"
   }
 }
